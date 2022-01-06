@@ -1,0 +1,122 @@
+# Crtanje geometrije motorskog nosača
+# Autor: Miloš D. Petrašinović <mpetrasinovic@mas.bg.ac.rs>
+# Proračun strukture letelica
+# Masinski fakultet, Univerzitet u Beogradu
+# Katedra za vazduhoplovstvo, Struktura letelica
+# https://vazmfb.com
+# Beograd, 2021
+# 
+# --------------------
+#
+# Copyright (C) 2021 Milos Petrasinovic <info@vazmfb.com>
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as 
+# published by the Free Software Foundation, either version 3 of the 
+# License, or (at your option) any later version.
+#  
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#  
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# ----- PARAMTERI -----
+# Koordinate čvorova
+# nc[čvor] = [x, y, z];
+nc = [[0, 0, 0], # čvor 1
+      [0, 700, 0], # čvor 2
+      [0, 0, 700], # čvor 3
+      [0, 700, 700], # čvor 4
+      [1200, 0, 350], # čvor 5
+      [1200, 700, 350], # čvor 6
+      [300, 37.5, 350], # čvor 7
+      [300, 662.5, 350], # čvor 8
+      [900, 350, 37.5], # čvor 9
+      [900, 350, 662.5]]; # čvor 10
+# Čvorovi elemenata motorskog nosača
+# enn[element] = [čvor1, čvor2];
+enn = [[1, 7], # štap 1
+       [3, 7], # štap 2
+       [2, 8], # štap 3
+       [4, 8], # štap 4
+       [5, 10], # štap 5
+       [5, 9], # štap 6
+       [6, 10], # štap 7
+       [6, 9]]  # štap 8
+# Čvorovi elemenata motora (beskonačno kruti elementi)
+# enm[element] = [čvor1, čvor2];
+enm = [[7, 8], # štap motora 1
+       [8, 9], # štap motora 2
+       [9, 7], # štap motora 3
+       [7, 10], # štap motora 4
+       [10, 8], # štap motora 5
+       [10, 9]] # štap motora 6
+# --------------------
+
+__Name__ = 'motorskiNosacGeometrija'
+__Comment__ = 'Crtanje geometrije motorskog nosača'
+__Author__ = 'Miloš Petrašinović'
+__Version__ = '1.0.0'
+__Date__ = '2021-12-12'
+__License__ = 'LGPL-3.0-or-later'
+__Web__ = "https://github.com/VAZMFB/Motorski-Nosac-MKE/"
+__Wiki__ = ''
+__Icon__ = ''
+__Help__ = 'Crtanje geometrije motorskog nosača'
+__Status__ = 'stable'
+__Requires__ = 'Freecad >= 0.18.4'
+__Communication__ = 'https://github.com/VAZMFB/Motorski-Nosac-MKE/issues/'
+__Files__ = ''
+
+import FreeCAD as App
+import FreeCADGui as Gui
+import Part
+
+activeDocument = App.ActiveDocument;
+activeDocumentGui = Gui.ActiveDocument;
+c = [[0.0000, 0.4470, 0.7410], # redosled boja
+     [0.8500, 0.3250, 0.0980],
+     [0.9290, 0.6940, 0.1250],
+     [0.4940, 0.1840, 0.5560],
+     [0.4660, 0.6740, 0.1880],
+     [0.3010, 0.7450, 0.9330],
+     [0.6350, 0.0780, 0.1840]]
+
+# Modeliranje čvorova
+nodes = [];
+for i in range(len(nc)):
+  node = activeDocument.addObject("Part::Vertex", "Node-"+str(i+1))
+  node.X = nc[i][0]
+  node.Y = nc[i][1]
+  node.Z = nc[i][2]
+  node.Label = "Node-"+str(i+1)
+  nodeGui = activeDocumentGui.getObject(node.Name);
+  nodeGui.PointSize = 10
+  nodeGui.PointColor = tuple(c[1])
+  nodes.append(node)
+
+# Modeliranje štapova motorskog nosača
+for i in range(len(enn)):
+    rodShape = Part.makeLine(nodes[enn[i][0]-1].Shape.Point, nodes[enn[i][1]-1].Shape.Point)
+    rod = activeDocument.addObject("Part::Feature", "Rod-"+str(i+1))
+    rod.Shape = rodShape;
+    del rodShape
+    rodGui = activeDocumentGui.getObject(rod.Name);
+    rodGui.LineWidth = 3
+    rodGui.LineColor = tuple(c[1])
+    
+# Modeliranje štapova na mestu motora (beskonačno kruti štapovi)
+for i in range(len(enm)):
+    rodShape = Part.makeLine(nodes[enm[i][0]-1].Shape.Point, nodes[enm[i][1]-1].Shape.Point)
+    rod = activeDocument.addObject("Part::Feature", "Engine_rod-"+str(i+1))
+    rod.Shape = rodShape
+    del rodShape
+    rodGui = activeDocumentGui.getObject(rod.Name);
+    rodGui.LineWidth = 3
+    rodGui.LineColor = tuple(c[0])
+    
+App.ActiveDocument.recompute()
+Gui.SendMsgToActiveView("ViewFit")
