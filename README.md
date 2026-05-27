@@ -3,7 +3,7 @@
 Strukturalna analiza motorskog nosača metodom konačnih elemenata.
 
 <p align="center">
-  <img src="https://vazmfb.com/web/img/github/motorskiNosacMKE.png" width="800">
+  <img src="https://milospetrasinovic.com/web/img/vazmfb-github/motorskiNosacMKE.png" width="800">
 </p>
 
 Za više informacija posetite https://vazmfb.com
@@ -18,7 +18,7 @@ Navedeni kod je testiran sa **GNU Octave 6.4.0**.
 Prilagodite ulazne paramtere i pokrenite `motorskiNosacMKE.m` koristeći GNU Octave.
 
 ## Licenca
-Copyright (C) 2021 Miloš Petrašinović <info@vazmfb.com>
+Copyright (C) 2021 Miloš Petrašinović <mpetrasinovic@mas.bg.ac.rs>
  
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as 
