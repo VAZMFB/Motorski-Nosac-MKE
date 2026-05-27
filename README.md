@@ -6,7 +6,7 @@ Strukturalna analiza motorskog nosača metodom konačnih elemenata.
   <img src="https://milospetrasinovic.com/web/img/vazmfb-github/motorskiNosacMKE.png" width="800">
 </p>
 
-Za više informacija posetite https://vazmfb.com
+Za više informacija posetite http://vaz.mas.bg.ac.rs
 
 ## Zahtevi
 [GNU Octave](https://www.gnu.org/software/octave/)<br>
